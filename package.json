@@ -1,0 +1,35 @@
+{
+  "name": "benjie-fitness-coach",
+  "version": "1.0.0",
+  "description": "BENJIE - Personal AI Fitness Coach Desktop Application",
+  "type": "module",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win nsis"
+  },
+  "author": "Benjie Developer",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^16.6.1",
+    "express": "^5.2.1",
+    "groq-sdk": "^1.6.0"
+  },
+  "devDependencies": {
+    "electron": "^30.5.1",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.benjie.fitness",
+    "productName": "BENJIE Fitness Coach",
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  },
+  "keywords": []
+}

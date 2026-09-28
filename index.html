@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BENJIE - Personal Fitness Coach</title>
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  
+  <style>
+    :root {
+      --bg-dark: #0f1115;
+      --card-bg: #181a20;
+      --border-color: #262932;
+      --brand-green: #8ce638;
+      --brand-green-hover: #a2f254;
+      --text-main: #ffffff;
+      --text-sub: #9ca3af;
+      --danger-red: #ef4444;
+      --danger-red-hover: #dc2626;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      user-select: none;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .app-layout {
+      display: grid;
+      grid-template-columns: 240px 1fr 310px;
+      height: 100vh;
+      gap: 12px;
+      padding: 12px;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .brand-icon {
+      font-size: 24px;
+      color: var(--brand-green);
+    }
+
+    .brand-text h1 {
+      font-size: 18px;
+      letter-spacing: 1px;
+    }
+
+    .brand-text span {
+      font-size: 9px;
+      color: var(--brand-green);
+      font-weight: bold;
+    }
+
+    .nav-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex-grow: 1;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--text-sub);
+      text-decoration: none;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .nav-item:hover, .nav-item.active {
+      background-color: var(--brand-green);
+      color: #000;
+      font-weight: bold;
+    }
+
+    .user-profile-card {
+      background-color: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 10px;
+      margin-top: 10px;
+      cursor: pointer;
+      transition: border-color 0.2s ease;
+    }
+
+    .user-profile-card:hover {
+      border-color: var(--brand-green);
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .profile-img {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1.5px solid var(--brand-green);
+      object-fit: cover;
+    }
+
+    .user-info h4 { font-size: 12px; }
+    .user-info p { font-size: 10px; color: var(--text-sub); }
+
+    .xp-bar {
+      background: #2a2d37;
+      height: 6px;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .xp-progress {
+      background: var(--brand-green);
+      height: 100%;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .xp-text {
+      font-size: 9px;
+      color: var(--text-sub);
+      display: block;
+      margin-top: 4px;
+      text-align: right;
+    }
+
+    .quote-card {
+      margin-top: 12px;
+      font-style: italic;
+      font-size: 11px;
+      color: var(--text-sub);
+      border-left: 2px solid var(--brand-green);
+      padding-left: 8px;
+    }
+
+    /* MAIN CONTENT */
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow-y: auto;
+    }
+
+    .top-bar {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .welcome-header h2 { font-size: 18px; }
+    .welcome-header p { font-size: 12px; color: var(--text-sub); }
+
+    .stats-group {
+      display: flex;
+      gap: 12px;
+    }
+
+    .stat-card {
+      background: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      padding: 8px 14px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .stat-title { font-size: 10px; color: var(--text-sub); }
+    .stat-value { font-size: 13px; font-weight: bold; }
+    .brand-color { color: var(--brand-green); }
+
+    /* VIEWS */
+    .view-panel {
+      display: none;
+    }
+
+    .view-panel.active-view {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .hero-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .avatar-stage {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      position: relative;
+      overflow: hidden;
+      height: 300px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .stage-avatar-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .coach-speech-bubble {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      right: 15px;
+      background: rgba(15, 17, 21, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 11px;
+      color: #e5e7eb;
+      z-index: 2;
+    }
+
+    .workout-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .workout-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .workout-header i { color: var(--brand-green); }
+    .subtitle { font-size: 10px; color: var(--brand-green); font-weight: bold; }
+
+    .exercise-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .exercise-item {
+      background: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .step-num {
+      background: var(--brand-green);
+      color: #000;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: bold;
+    }
+
+    .ex-info strong { font-size: 12px; }
+    .ex-info p { font-size: 10px; color: var(--text-sub); }
+
+    .btn-primary {
+      background-color: var(--brand-green);
+      color: #000;
+      border: none;
+      border-radius: 10px;
+      padding: 10px;
+      font-weight: bold;
+      font-size: 12px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .btn-primary:hover { background-color: var(--brand-green-hover); }
+
+    .btn-danger {
+      background-color: var(--danger-red);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-weight: bold;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .btn-danger:hover { background-color: var(--danger-red-hover); }
+
+    /* COACH ACTION */
+    .coach-action-section {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    .coach-action-section h4 {
+      font-size: 11px;
+      color: var(--text-sub);
+      margin-bottom: 10px;
+    }
+
+    .quick-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      background: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      color: #fff;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .action-btn:hover {
+      border-color: var(--brand-green);
+      color: var(--brand-green);
+    }
+
+    /* OTHER VIEWS CARD LAYOUTS */
+    .content-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 12px;
+    }
+
+    .section-desc {
+      font-size: 12px;
+      color: var(--text-sub);
+      margin-bottom: 16px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .inner-box {
+      background-color: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .inner-box h4 {
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+
+    .inner-box p {
+      font-size: 11px;
+      color: var(--text-sub);
+    }
+
+    .stat-highlight {
+      font-size: 16px;
+      font-weight: bold;
+      color: #fff;
+      margin-top: 6px;
+    }
+
+    .icon-lg {
+      font-size: 24px;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    /* RIGHT PANEL */
+    .right-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .timer-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .panel-label { font-size: 10px; color: var(--text-sub); font-weight: bold; }
+    .timer-sub { font-size: 11px; font-weight: bold; margin-bottom: 10px; }
+
+    .circle-timer {
+      position: relative;
+      width: 110px;
+      height: 110px;
+      margin: 0 auto;
+    }
+
+    .timer-svg {
+      transform: rotate(-90deg);
+      width: 100%;
+      height: 100%;
+    }
+
+    .timer-path-background {
+      fill: none;
+      stroke: #262932;
+      stroke-width: 8;
+    }
+
+    .timer-path-remaining {
+      fill: none;
+      stroke: var(--brand-green);
+      stroke-width: 8;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 1s linear;
+    }
+
+    .timer-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .next-exercise { font-size: 10px; color: var(--text-sub); margin: 8px 0; }
+
+    .btn-secondary {
+      background: var(--bg-dark);
+      color: #fff;
+      border: 1px solid var(--border-color);
+      padding: 6px 16px;
+      border-radius: 8px;
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    /* CHAT CARD */
+    .chat-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 12px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: bold;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 8px;
+      margin-bottom: 10px;
+    }
+
+    .status-online { color: var(--brand-green); font-size: 10px; }
+
+    .chat-messages {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      overflow-y: auto;
+      max-height: 280px;
+    }
+
+    .chat-bubble {
+      max-width: 80%;
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 11px;
+    }
+
+    .chat-bubble.bot {
+      background-color: var(--bg-dark);
+      align-self: flex-start;
+    }
+
+    .chat-bubble.user {
+      background-color: var(--brand-green);
+      color: #000;
+      font-weight: 500;
+      align-self: flex-end;
+    }
+
+    .timestamp {
+      font-size: 8px;
+      opacity: 0.6;
+      display: block;
+      text-align: right;
+      margin-top: 2px;
+    }
+
+    .chat-input-row {
+      display: flex;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .chat-input-row input {
+      flex-grow: 1;
+      background: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 6px 10px;
+      color: #fff;
+      font-size: 11px;
+    }
+
+    .btn-send, .btn-icon {
+      background: var(--brand-green);
+      border: none;
+      border-radius: 8px;
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+      color: #000;
+    }
+
+    .btn-icon {
+      background: var(--bg-dark);
+      color: var(--text-sub);
+      border: 1px solid var(--border-color);
+    }
+
+    /* MODAL OVERLAYS */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.82);
+      backdrop-filter: blur(6px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      width: 480px;
+      max-width: 90%;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+
+    .modal-header h3 {
+      font-size: 16px;
+      color: var(--brand-green);
+    }
+
+    .close-modal-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-sub);
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    /* ACCOUNT CREATION & AVATAR PICKER */
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 11px;
+      color: var(--text-sub);
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+
+    .form-group input, .form-group select {
+      width: 100%;
+      background: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 10px;
+      color: #fff;
+      font-size: 12px;
+      outline: none;
+    }
+
+    .form-group input:focus, .form-group select:focus {
+      border-color: var(--brand-green);
+    }
+
+    .avatar-options-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .avatar-option {
+      border: 2px solid var(--border-color);
+      border-radius: 50%;
+      overflow: hidden;
+      cursor: pointer;
+      aspect-ratio: 1;
+      transition: all 0.2s ease;
+    }
+
+    .avatar-option img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .avatar-option.active, .avatar-option:hover {
+      border-color: var(--brand-green);
+      transform: scale(1.05);
+    }
+
+    .custom-avatar-upload {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .file-input-hidden {
+      display: none;
+    }
+
+    .file-upload-btn {
+      display: inline-block;
+      text-align: center;
+      width: 100%;
+      padding: 8px;
+      margin-top: 4px;
+    }
+
+    /* DANGER ZONE */
+    .danger-zone-card {
+      border: 1px solid var(--danger-red);
+      background-color: rgba(239, 68, 68, 0.05);
+    }
+
+    .danger-zone-card h3 {
+      color: var(--danger-red);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar">
+      <div class="brand">
+        <i class="fa-solid fa-dumbbell brand-icon"></i>
+        <div class="brand-text">
+          <h1>BENJIE</h1>
+          <span>FITNESS COACH</span>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <a href="#" class="nav-item active" data-view="dashboard"><i class="fa-solid fa-house"></i> Dashboard</a>
+        <a href="#" class="nav-item" data-view="workout-plan"><i class="fa-solid fa-clipboard-list"></i> Workout Plan</a>
+        <a href="#" class="nav-item" data-view="exercises"><i class="fa-solid fa-person-walking-luggage"></i> Exercises</a>
+        <a href="#" class="nav-item" data-view="progress"><i class="fa-solid fa-chart-line"></i> Progress</a>
+        <a href="#" class="nav-item" data-view="nutrition"><i class="fa-solid fa-utensils"></i> Nutrition</a>
+        <a href="#" class="nav-item" data-view="history"><i class="fa-solid fa-history"></i> History</a>
+        <a href="#" class="nav-item" data-view="reminders"><i class="fa-solid fa-bell"></i> Reminders</a>
+        <a href="#" class="nav-item" data-view="achievements"><i class="fa-solid fa-trophy"></i> Achievements</a>
+        <a href="#" class="nav-item" data-view="settings"><i class="fa-solid fa-gear"></i> Settings</a>
+      </nav>
+
+      <div class="user-profile-card" id="openAccountModalBtn" title="Click to Edit Profile">
+        <div class="user-info">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150" alt="Avatar" class="profile-img" id="userAvatarImg">
+          <div>
+            <h4 id="sidebarUserName">Guest User</h4>
+            <p id="userLevelDisplay">Level 1</p>
+          </div>
+        </div>
+        <div class="xp-bar">
+          <div class="xp-progress" id="xpProgressBar"></div>
+        </div>
+        <span class="xp-text" id="xpTextDisplay">0 / 1000 XP</span>
+      </div>
+
+      <div class="quote-card">
+        <p>"Discipline today, strength tomorrow."</p>
+        <span class="quote-author">- Benjie</span>
+      </div>
+    </aside>
+
+    <!-- CENTER CONTENT -->
+    <main class="main-content">
+      <header class="top-bar">
+        <div class="welcome-header">
+          <h2 id="viewTitle">Good Day! 👋</h2>
+          <p id="viewSubtitle">Let's set up your account to unlock customized workouts!</p>
+        </div>
+        <div class="stats-group">
+          <div class="stat-card">
+            <span class="stat-icon">🔥</span>
+            <div>
+              <span class="stat-title">Streak</span>
+              <p class="stat-value brand-color" id="streakDisplay">0 days</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-icon">🏋️</span>
+            <div>
+              <span class="stat-title">Workouts</span>
+              <p class="stat-value" id="workoutsDisplay">0 completed</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-icon">🏆</span>
+            <div>
+              <span class="stat-title">Achievements</span>
+              <p class="stat-value" id="achievementsDisplay">0 unlocked</p>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- 1. DASHBOARD -->
+      <div id="dashboard-view" class="view-panel active-view">
+        <section class="hero-section">
+          <div class="avatar-stage">
+            <div class="coach-speech-bubble" id="coachBubble">
+              <strong>I'm Benjie,</strong><br>
+              your personal fitness coach! Create or edit your account to unlock safety-tailored workouts! 👋
+            </div>
+            <img id="mainAvatarImage" src="https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&q=80&w=600" alt="Benjie Coach" class="stage-avatar-img">
+          </div>
+
+          <div class="workout-card">
+            <div class="workout-header">
+              <i class="fa-solid fa-dumbbell"></i>
+              <div>
+                <span class="subtitle">TODAY'S WORKOUT</span>
+                <h3 id="todayWorkoutTitle">Custom Routine</h3>
+              </div>
+            </div>
+
+            <ul class="exercise-list" id="dashboardExerciseList"></ul>
+
+            <button class="btn-primary" id="startWorkoutBtn">
+              <i class="fa-solid fa-play"></i> START WORKOUT
+            </button>
+          </div>
+        </section>
+
+        <!-- COACH ACTION -->
+        <section class="coach-action-section">
+          <h4>COACH ACTION</h4>
+          <div class="quick-actions">
+            <button class="action-btn" data-action="ask-coach"><i class="fa-solid fa-comments"></i> Ask Coach</button>
+            <button class="action-btn" data-action="workout-plan"><i class="fa-solid fa-pen-to-square"></i> Log Workout</button>
+            <button class="action-btn" data-action="progress"><i class="fa-solid fa-chart-line"></i> Track Progress</button>
+            <button class="action-btn" data-action="nutrition"><i class="fa-solid fa-bowl-food"></i> Meal Plan</button>
+            <button class="action-btn" data-action="reminders"><i class="fa-solid fa-bell"></i> Reminders</button>
+          </div>
+        </section>
+      </div>
+
+      <!-- 2. WORKOUT PLAN -->
+      <div id="workout-plan-view" class="view-panel">
+        <div class="content-card">
+          <h3>Weekly Training Program</h3>
+          <p class="section-desc" id="planFilterNotice">Customized based on your profile selection.</p>
+          <div class="grid-3" id="weeklyPlansGrid"></div>
+        </div>
+      </div>
+
+      <!-- 3. EXERCISES -->
+      <div id="exercises-view" class="view-panel">
+        <div class="content-card">
+          <h3>Exercise Library</h3>
+          <p class="section-desc">Browse form guides and muscle targets.</p>
+          <div class="grid-2">
+            <div class="inner-box">
+              <i class="fa-solid fa-dumbbell brand-color icon-lg"></i>
+              <h4>Barbell Bench Press</h4>
+              <p>Primary Target: Chest (Pectoralis Major)</p>
+            </div>
+            <div class="inner-box">
+              <i class="fa-solid fa-person-running brand-color icon-lg"></i>
+              <h4>Bodyweight Push Ups</h4>
+              <p>Primary Target: Chest, Triceps, Core</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. PROGRESS -->
+      <div id="progress-view" class="view-panel">
+        <div class="content-card">
+          <h3>Analytics & Metrics</h3>
+          <p class="section-desc">Monitor your workout achievements over time.</p>
+          <div class="grid-2">
+            <div class="inner-box">
+              <h4>Current Streak</h4>
+              <p class="stat-highlight" id="progressStreakText">0 Days</p>
+            </div>
+            <div class="inner-box">
+              <h4>Total Workouts Finished</h4>
+              <p class="stat-highlight" id="progressWorkoutsText">0 Sessions</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. NUTRITION -->
+      <div id="nutrition-view" class="view-panel">
+        <div class="content-card">
+          <h3>Macro & Meal Planner</h3>
+          <p class="section-desc">Daily calorie targets and meal breakdowns.</p>
+          <div class="grid-3">
+            <div class="inner-box">
+              <h4>Protein Target</h4>
+              <p class="stat-highlight">0g / 180g</p>
+            </div>
+            <div class="inner-box">
+              <h4>Carbs Target</h4>
+              <p class="stat-highlight">0g / 250g</p>
+            </div>
+            <div class="inner-box">
+              <h4>Fats Target</h4>
+              <p class="stat-highlight">0g / 65g</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. HISTORY -->
+      <div id="history-view" class="view-panel">
+        <div class="content-card">
+          <h3>Workout History</h3>
+          <p class="section-desc">Review your past completed sessions.</p>
+          <ul class="history-list" id="historyListContainer">
+            <li style="color: var(--text-sub); font-style: italic;">No completed workouts logged yet. Start a workout to record history!</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 7. REMINDERS -->
+      <div id="reminders-view" class="view-panel">
+        <div class="content-card">
+          <h3>Coach Reminders</h3>
+          <p class="section-desc">Active alarms and schedule notifications.</p>
+          <div class="grid-2">
+            <div class="inner-box">
+              <i class="fa-solid fa-clock brand-color"></i>
+              <h4>Daily Workout Alert</h4>
+              <p>Set for 08:00 AM every weekday</p>
+            </div>
+            <div class="inner-box">
+              <i class="fa-solid fa-glass-water brand-color"></i>
+              <h4>Hydration Goal</h4>
+              <p>Drink 3.5L water daily</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 8. ACHIEVEMENTS -->
+      <div id="achievements-view" class="view-panel">
+        <div class="content-card">
+          <h3>Unlocked Trophies</h3>
+          <p class="section-desc">Complete workouts to unlock badges!</p>
+          <div class="grid-3" id="achievementsGrid">
+            <p style="color: var(--text-sub); font-style: italic;">No achievements unlocked yet. Start your first workout!</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 9. SETTINGS -->
+      <div id="settings-view" class="view-panel">
+        <div class="content-card">
+          <h3>App Settings</h3>
+          <p class="section-desc">Customize your interface and profile parameters.</p>
+          <div>
+            <label style="display: block; margin-bottom: 8px;"><input type="checkbox" checked /> Dark Theme Mode</label>
+            <label style="display: block; margin-bottom: 8px;"><input type="checkbox" checked /> Audio Voice Coaching (Benjie AI)</label>
+            <label style="display: block; margin-bottom: 16px;"><input type="checkbox" checked /> Desktop System Notifications</label>
+          </div>
+        </div>
+
+        <div class="content-card danger-zone-card">
+          <h3><i class="fa-solid fa-triangle-exclamation"></i> Danger Zone - Account Management</h3>
+          <p class="section-desc">Deleting your account will clear all progress, XP, history, and stored preferences.</p>
+          <button class="btn-danger" id="deleteAccountBtn">
+            <i class="fa-solid fa-user-slash"></i> Delete Account & Clear Data
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- RIGHT PANEL -->
+    <aside class="right-panel">
+      <div class="timer-card">
+        <span class="panel-label">WORKOUT TIMER</span>
+        <p class="timer-sub">Rest Time</p>
+        
+        <div class="circle-timer">
+          <svg class="timer-svg" viewBox="0 0 100 100">
+            <circle class="timer-path-background" cx="50" cy="50" r="45"></circle>
+            <circle class="timer-path-remaining" id="timerProgress" cx="50" cy="50" r="45" stroke-dasharray="283" stroke-dashoffset="0"></circle>
+          </svg>
+          <span class="timer-text" id="timerDisplay">00:60</span>
+        </div>
+        <p class="next-exercise">Next: Active Set</p>
+        <button class="btn-secondary" id="timerControlBtn"><i class="fa-solid fa-play"></i> START</button>
+      </div>
+
+      <div class="chat-card">
+        <div class="chat-header">
+          <span>CHAT WITH BENJIE</span>
+          <span class="status-online">🟢 Online</span>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+          <div class="chat-bubble bot">
+            <p>Welcome! Please create or configure your profile so I can prepare the safest workout plan for you!</p>
+            <span class="timestamp">09:00 AM</span>
+          </div>
+        </div>
+
+        <div class="chat-input-row">
+          <input type="text" id="chatInput" placeholder="Type your message..." />
+          <button class="btn-icon" id="micBtn"><i class="fa-solid fa-microphone"></i></button>
+          <button class="btn-send" id="sendBtn"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- WORKOUT PLAN DETAILS MODAL OVERLAY -->
+  <div class="modal-overlay" id="planModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalTitle">Workout Plan Details</h3>
+        <button class="close-modal-btn" id="closeModalBtn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <p id="modalDescription" style="font-size:12px; color:var(--text-sub); margin-bottom:12px;"></p>
+        <ul id="modalExerciseList"></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- CREATE / EDIT ACCOUNT MODAL OVERLAY -->
+  <div class="modal-overlay active" id="accountModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-user-plus"></i> Create Profile & Setup Routine</h3>
+        <button class="close-modal-btn" id="closeAccountModalBtn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="accountForm">
+        
+        <!-- AVATAR PICKER & CUSTOM UPLOAD -->
+        <div class="form-group">
+          <label>Choose Profile Picture</label>
+          <div class="avatar-options-grid" id="avatarOptionsGrid">
+            <div class="avatar-option active" data-avatar="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=300">
+              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=300" alt="Preset 1">
+            </div>
+            <div class="avatar-option" data-avatar="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=300">
+              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=300" alt="Preset 2">
+            </div>
+            <div class="avatar-option" data-avatar="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=300">
+              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=300" alt="Preset 3">
+            </div>
+            <div class="avatar-option" data-avatar="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=300">
+              <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=300" alt="Preset 4">
+            </div>
+          </div>
+
+          <div class="custom-avatar-upload">
+            <input type="file" id="userAvatarInput" accept="image/*" class="file-input-hidden" />
+            <label for="userAvatarInput" class="btn-secondary file-upload-btn">
+              <i class="fa-solid fa-cloud-arrow-up"></i> Upload Custom Image
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="userNameInput">Your Full Name</label>
+          <input type="text" id="userNameInput" placeholder="Enter your name..." required />
+        </div>
+
+        <div class="form-group">
+          <label for="userEmailInput">Email Address</label>
+          <input type="email" id="userEmailInput" placeholder="Enter your email..." required />
+        </div>
+
+        <div class="form-group">
+          <label for="userGenderSelect">Workout Preference / Gender Category</label>
+          <select id="userGenderSelect">
+            <option value="men">Men's Workout Routine</option>
+            <option value="women">Women's Workout Routine</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="userHealthSelect">Medical / Illness Condition</label>
+          <select id="userHealthSelect">
+            <option value="none">None (Standard Intensity)</option>
+            <option value="heart">Heart Illness (Low-Impact, Safe Cardio)</option>
+            <option value="joints">Joint Sensitivity (Low Stress)</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn-primary" style="width:100%; margin-top:10px;">
+          Save Profile & Load Routine
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
